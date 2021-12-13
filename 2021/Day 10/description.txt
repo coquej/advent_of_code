@@ -51,6 +51,7 @@ In the above example, an illegal ) was found twice (2*3 = 6 points), an illegal 
 Find the first illegal character in each corrupted line of the navigation subsystem. What is the total syntax error score for those errors?
 
 
+
 --- Part Two ---
 
 Now, discard the corrupted lines. The remaining lines are incomplete.
@@ -79,7 +80,7 @@ Multiply the total score by 5 to get 0, then add the value of ] (2) to get a new
 Multiply the total score by 5 to get 10, then add the value of ) (1) to get a new total score of 11.
 Multiply the total score by 5 to get 55, then add the value of } (3) to get a new total score of 58.
 Multiply the total score by 5 to get 290, then add the value of > (4) to get a new total score of 294.
-The five lines' completion strings have total scores as follows:
+The five lines' completion strings have total scores as follows: 
 
 }}]])})] - 288957 total points.
 )}>]}) - 5566 total points.
