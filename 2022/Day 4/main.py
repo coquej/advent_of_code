@@ -23,9 +23,7 @@ def part2(input_list):
 	print('Part 2 solution:', sum(overlaps_l))
 
 if __name__ == '__main__':
-    input_list = open(sys.argv[1], "r").read().split("\n")
-
-    
+    input_list = open(sys.argv[1], "r").read().split("\n")    
     cleaned_list = clean_list(input_list)
     part1(cleaned_list)
     part2(cleaned_list)
