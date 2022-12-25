@@ -41,6 +41,7 @@ def get_max_score(trees):
     max_score = max([get_score(i,j,trees) for i in range(0,len(trees)) for j in range(0,len(trees[i]))])
     print('The greatest score is', max_score)
 
+
 if __name__ == '__main__':
     input_list = open(sys.argv[1], "r").read().split("\n")
     trees = clean_input(input_list)
