@@ -1,5 +1,4 @@
 import sys
-from operator import itemgetter
 
 def clean_input(file):
     lines = open(file, "r").read().split("\n")
