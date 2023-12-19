@@ -11,6 +11,17 @@ pipes = { # movements [DOWN, UP, LEFT, RIGHT]
     'S' : [1, 1, 1, 1]
 }
 
+expanded_tiles = {
+    '|' : [[' ', '*', ' '],[' ', '*', ' '],[' ', '*', ' ']],
+    '-' : [[' ', ' ', ' '],['*', '*', '*'],[' ', ' ', ' ']],
+    'L' : [[' ', '*', ' '],[' ', '*', '*'],[' ', ' ', ' ']],
+    'J' : [[' ', '*', ' '],['*', '*', ' '],[' ', ' ', ' ']],
+    '7' : [[' ', ' ', ' '],['*', '*', ' '],[' ', '*', ' ']],
+    'F' : [[' ', ' ', ' '],[' ', '*', '*'],[' ', '*', ' ']],
+    '.' : [[' ', ' ', ' '],[' ', ' ', ' '],[' ', ' ', ' ']],
+    'S' : [['*', '*', '*'],['*', '*', '*'],['*', '*', '*']]
+}
+
 
 def clean_input(file):
     return open(file, "r").read().split("\n")
@@ -51,8 +62,70 @@ def part1(lines):
         steps += 1
         curr_pos = set(next_pos) - visited
 
-    return steps
+    return steps, visited
+
+def expand_map(lines):
+    res = [[expanded_tiles[x] for x in line] for line in lines]
+
+    return [(list(''.join([''.join(x[i]) for x in line]))) for line in res for i in [0,1,2]]
+
+def fill_neighbors(matrix, a, b, visited, to_visit):
+    i, j = a, b
+    to_visit.add((i, j))
+
+    while len(to_visit)!=0:
+        (i, j) = to_visit.pop()
+        visited.add((i, j))
+
+        if 0 <= i < len(matrix) and 0 <= j < len(matrix[i]) and matrix[i][j] == ' ':
+            matrix[i][j] = 'W'
+            if i+1 < len(matrix) and (i+1, j) not in visited:
+                to_visit.add((i+1, j))
+            if i-1 >= 0 and (i-1, j) not in visited:
+                to_visit.add((i-1, j))
+            if j+1 < len(matrix[0]) and (i, j+1) not in visited:
+                to_visit.add((i, j+1))
+            if j-1 < len(matrix[0]) and (i, j-1) not in visited:
+                to_visit.add((i, j-1))
+
+def is_fully_empty(i, j, draw):
+    for k in [i-1, i, i+1]:
+        for l in [j-1, j, j+1]:
+            if draw[k][l] != ' ':
+                return False
+    
+    return True
+
+def part2(lines, visited):
+    # Removing not path elements
+    cleaned_lines = [''.join([lines[i][j] if (i,j) in visited else '.' for j in range(len(lines[i]))]) for i in range(len(lines))]
+
+    # Expand map to 3x3 cells
+    draw = expand_map(cleaned_lines)
+
+    # Draw 'W' with neighbours from the first and last columns and rows, until reaching the loop "walls"
+    visited = set()
+    to_visit = set()
+    for i in [0, len(draw) - 1]:
+        for j in range(len(draw[i])):
+            if draw[i][j] == ' ':
+                fill_neighbors(draw, i, j, visited, to_visit)
+
+    for i in range(len(draw)):
+        for j in [0, len(draw[i]) - 1]:
+            if draw[i][j] == ' ':
+                fill_neighbors(draw, i, j, visited, to_visit)
+    
+    # Count as "Full Empty" cell if all 3x3 cells (previously expanded) were not filled with W or other symbols than ' '.
+    inner_tiles = sum([1 if is_fully_empty(i, j, draw) else 0 for i in range(len(draw)) for j in range(len(draw[i]))])
+
+    # Divide by 9 to get results after reducing the 3x3 cells
+    return int(inner_tiles/9)
+
 
 if __name__ == "__main__":
     lines = clean_input(sys.argv[1])
-    print('Part 1:', part1(lines))
+
+    res1, visited = part1(lines)
+    print('Part 1:', res1)
+    print('Part 2:', part2(lines, visited))
